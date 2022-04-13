@@ -1,27 +1,52 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld msg="Welcome to Your Vue.js + TypeScript App" />
+  <div class="w-screen min-h-screen h-auto bg-navy">
+    <header-component
+      @searchClick="runSearch"
+      @advancedSearchClick="setAdvancedSearchModalVisibility(true)"
+      @settingsClick="setSettingsModalVisibility(true)"
+    />
+    <advanced-search-modal
+      v-show="advancedSearchModalVisible"
+      @close="setAdvancedSearchModalVisibility(false)"
+    />
+    <settings-modal
+      v-show="settingsModalVisible"
+      @close="setSettingsModalVisibility(false)"
+    />
+  </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import HelloWorld from "./components/HelloWorld.vue";
+import { defineComponent } from 'vue'
+import './assets/global.css'
+
+import HeaderComponent from './components/HeaderComponent.vue'
+import AdvancedSearchModal from './components/AdvancedSearchModal.vue'
+import SettingsModal from './components/SettingsModal.vue'
 
 export default defineComponent({
-  name: "App",
+  name: 'App',
   components: {
-    HelloWorld,
+    HeaderComponent,
+    AdvancedSearchModal,
+    SettingsModal
   },
-});
+  data() {
+    return {
+      advancedSearchModalVisible: false,
+      settingsModalVisible: false,
+    }
+  },
+  methods: {
+    runSearch(query: string) {
+      alert(query)
+    },
+    setAdvancedSearchModalVisibility(visible: boolean) {
+      this.advancedSearchModalVisible = visible
+    },
+    setSettingsModalVisibility(visible: boolean) {
+      this.settingsModalVisible = visible
+    },
+  },
+})
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>

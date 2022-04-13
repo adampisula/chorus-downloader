@@ -14,7 +14,6 @@
   },
   "main": "background.js",
   "dependencies": {
-    "ts-loader": "~8.2.0",
     "vue": "^3.2.13"
   },
   "devDependencies": {
@@ -29,16 +28,21 @@
     "@vue/eslint-config-typescript": "^9.1.0",
     "@vue/test-utils": "^2.0.0-0",
     "@vue/vue3-jest": "^27.0.0-alpha.1",
+    "autoprefixer": "^10.4.4",
     "babel-jest": "^27.0.6",
     "electron": "^13.0.0",
     "electron-devtools-installer": "^3.1.0",
+    "electron-reloader": "^1.2.3",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-vue": "^8.0.3",
     "jest": "^27.0.5",
+    "postcss": "^8.4.12",
     "prettier": "^2.4.1",
+    "tailwindcss": "^3.0.24",
     "ts-jest": "^27.0.4",
+    "ts-loader": "~8.2.0",
     "typescript": "~4.5.5",
     "vue-cli-plugin-electron-builder": "~2.1.1"
   }
