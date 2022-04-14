@@ -12,11 +12,14 @@ module.exports = {
         'navy-very-light': '#485867',
         'highlight': '#ffb300',
         'primary': '#ffffff',
-        'secondary': '#eeeeee',
+        'secondary': '#d7d7d7',
       },
       fontFamily: {
         sans: ['Nunito', 'sans-serif'],
       },
+      minHeight: {
+        '24': '6rem'
+      }
     },
   },
   plugins: [],

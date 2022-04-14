@@ -15,7 +15,6 @@
       v-show="settingsModalVisible"
       @close="setSettingsModalVisibility(false)"
     />
-    <footer-component />
   </div>
 </template>
 

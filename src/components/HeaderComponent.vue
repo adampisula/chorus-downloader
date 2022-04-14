@@ -20,7 +20,7 @@
       </button>
     </div>
     <button
-      class="h-10 px-2 ml-1 border-none bg-transparent font-sans text-highlight rounded-md hover:bg-navy-darker"
+      class="h-10 px-2 ml-2 border-none bg-transparent font-sans text-sm text-highlight rounded-md hover:bg-navy-darker"
       @click="$emit('advancedSearchClick')"
     >
       Advanced Search
