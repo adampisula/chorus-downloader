@@ -1,9 +1,8 @@
 "use strict";
 
-import { app, protocol, BrowserWindow } from "electron"
+import { app, protocol, BrowserWindow, shell } from "electron"
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib"
 import installExtension, { VUEJS3_DEVTOOLS } from "electron-devtools-installer"
-import electronReloader from 'electron-reloader'
 
 const isDevelopment = process.env.NODE_ENV !== "production"
 
@@ -30,6 +29,15 @@ async function createWindow() {
 
   win.setTitle('Chorus Downloader')
   win.on("page-title-updated", (event) => event.preventDefault())
+
+  win.webContents.setWindowOpenHandler((details) => {
+    if('file://' === details.url.substr(0, 'file://'.length)) {
+      return { action: 'allow' };
+    }
+
+    shell.openExternal(details.url);
+    return { action: 'deny' };
+  });
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode

@@ -1,10 +1,12 @@
 <template>
-  <div class="w-screen min-h-screen h-auto bg-navy">
+  <div class="w-screen min-h-screen h-screen bg-navy overflow-hidden">
     <header-component
       @searchClick="runSearch"
       @advancedSearchClick="setAdvancedSearchModalVisibility(true)"
       @settingsClick="setSettingsModalVisibility(true)"
     />
+    <song-list />
+
     <advanced-search-modal
       v-show="advancedSearchModalVisible"
       @close="setAdvancedSearchModalVisibility(false)"
@@ -13,6 +15,7 @@
       v-show="settingsModalVisible"
       @close="setSettingsModalVisibility(false)"
     />
+    <footer-component />
   </div>
 </template>
 
@@ -23,13 +26,15 @@ import './assets/global.css'
 import HeaderComponent from './components/HeaderComponent.vue'
 import AdvancedSearchModal from './components/AdvancedSearchModal.vue'
 import SettingsModal from './components/SettingsModal.vue'
+import SongList from './components/SongList.vue'
 
 export default defineComponent({
   name: 'App',
   components: {
     HeaderComponent,
     AdvancedSearchModal,
-    SettingsModal
+    SettingsModal,
+    SongList,
   },
   data() {
     return {
