@@ -7,9 +7,9 @@
     <div class="flex-1 h-auto ml-2 relative">
       <input 
         type="text"
-        placeholder="Search for a song..."
+        placeholder="What do you feel like playing today?"
         spellcheck="false"
-        class="w-full h-10 border border-gray-400 bg-white rounded-md focus:outline-none pl-4 pr-10 font-sans font-normal"
+        class="w-full h-10 border border-gray-400 bg-white rounded-md focus:outline-none pl-4 pr-10 font-sans font-normal text-sm"
         v-model="searchQuery"
       />
       <button

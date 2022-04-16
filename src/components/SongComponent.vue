@@ -1,39 +1,63 @@
 <template>
   <div
-    class="mt-2 px-3 py-2 w-full min-h-24 h-auto rounded-md odd:bg-navy-lighter even:bg-navy-very-light shadow-lg"
+    class="mt-2 px-3 py-2 w-full min-h-24 h-auto rounded-md odd:bg-navy-lighter even:bg-navy-very-light shadow-lg flex flex-row"
   >
-    <div
-      class="w-full h-auto relative border-b border-gray-400 flex flex-row"
-    >
-      <div class="flex-1">
-        <span
-          class="text-sm font-sans font-bold text-secondary mr-1.5"
-        >
-          {{ song.artist }}
-        </span>
-        <span
-          class="text-lg font-sans font-bold text-primary"
-        >
-          {{ song.name }}
-        </span>
-      </div>
-      <div>
-        <span class="text-xs font-sans text-primary">
-          <span class="font-semibold mr-1">
-            {{ ratingNotes }}
+    <div class="flex-1 h-auto">
+      <div
+        class="w-full h-auto relative border-b border-gray-400 flex flex-row"
+      >
+        <div class="flex-1">
+          <span
+            class="text-sm font-sans font-bold text-secondary mr-1.5"
+          >
+            {{ song.artist }}
           </span>
-          {{ averageNotes }} average NPS
-        </span>
+          <span
+            class="text-lg font-sans font-bold text-primary"
+          >
+            {{ song.name }}
+          </span>
+        </div>
+        <div>
+          <span class="text-xs font-sans text-primary">
+            <span class="font-semibold mr-1">
+              {{ ratingNotes }}
+            </span>
+            {{ averageNotes }} average NPS
+          </span>
+        </div>
+      </div>
+      <div class="w-full h-auto mt-0.5">
+        <div class="w-full h-auto flex flex-row justify-between">
+          <span class="font-sans text-2xs text-secondary">
+            {{ `${song.album} (${song.year}) - ${song.genre} - ${secondsToMinutes(song.length)} (${secondsToMinutes(song.effectiveLength)})` }}
+          </span>
+          <span class="font-sans text-2xs text-secondary">
+            {{ `${song.lastModified} - ${song.hashes.file}` }}
+          </span>
+        </div>
+      </div>
+      <div class="w-full h-10 mt-1 flex justify-between">
+        <button
+          class="w-auto h-10 rounded-md bg-transparent hover:bg-navy-darker text-base text-primary px-3"
+        >
+          Download <span class="font-semibold">{{ this.song.charter }}</span>'s chart
+          <font-awesome-icon icon="download" class="ml-1 mb-0.5" />
+        </button>
+        <div class="">
+          <instrument-component
+            v-for="(instrument, index) in instruments"
+            :key="index"
+            :instrument="instrument"
+          />
+        </div>
       </div>
     </div>
-    <div class="w-full h-auto mt-0.5">
-      <div class="w-full h-auto flex flex-row justify-between">
-        <span class="font-sans text-xs text-secondary">
-          {{ `${song.album} (${song.year}) - ${song.genre} - ${secondsToMinutes(song.length)} (${secondsToMinutes(song.effectiveLength)})` }}
-        </span>
-        <span class="font-sans text-xs text-secondary">
-          {{ `${song.lastModified} - ${song.hashes.file}` }}
-        </span>
+
+    <div class="w-1.5 my-1 ml-3 -mr-1 bg-gray-400 relative rounded-full flex items-col items-end">
+      <div
+        class="bottom-0 w-full bg-highlight h-1/2 rounded-full"
+        :style="`height: ${Math.min(averageNotes / 15, 1) * 100}%`">
       </div>
     </div>
   </div>
@@ -43,12 +67,18 @@
 import { defineComponent } from 'vue'
 import type SongData from '../types/SongData'
 import type { PropType } from 'vue'
-import NoteCounts from '../types/NoteCounts'
+import type NoteCounts from '../types/NoteCounts'
+import type InstrumentTierAndDiff from '../types/InstrumentTierAndDiff'
+import InstrumentComponent from './InstrumentComponent.vue'
 
 let averageNotes: number
 let ratingNotes: string
+let instruments: InstrumentTierAndDiff[] = []
 
 export default defineComponent({
+  components: {
+    InstrumentComponent
+  },
   name: 'SongComponent',
   props: {
     song: {
@@ -60,6 +90,7 @@ export default defineComponent({
     return {
       averageNotes,
       ratingNotes,
+      instruments,
     }
   },
   methods: {
@@ -117,6 +148,27 @@ export default defineComponent({
   mounted() {
     this.averageNotes = this.averageNPS(this.song.noteCounts, this.song.effectiveLength)
     this.ratingNotes = this.ratingNPS(this.averageNotes)
+
+    const displayInstruments = ['guitar', 'bass', 'guitarghl', 'bassghl', 'drums', 'keys']
+    let instrumentsAvailable: InstrumentTierAndDiff[] = []
+
+    for(const key in this.song.noteCounts) {
+      if(displayInstruments.includes(key)) {
+        instrumentsAvailable.push({
+          name: key,
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          tier: this.song[`tier_${key}`],
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          difficulty: this.song.noteCounts[key],
+        })
+      }
+    }
+
+    this.instruments = instrumentsAvailable.sort((a, b) => {
+      return displayInstruments.indexOf(a.name) - displayInstruments.indexOf(b.name)
+    })
   }
 })
 </script>

@@ -19,7 +19,10 @@ module.exports = {
       },
       minHeight: {
         '24': '6rem'
-      }
+      },
+      fontSize: {
+        '2xs': '0.625rem',
+      },
     },
   },
   plugins: [],
