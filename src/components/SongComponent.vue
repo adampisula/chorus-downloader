@@ -33,7 +33,10 @@
             {{ `${song.album} (${song.year}) - ${song.genre} - ${secondsToMinutes(song.length)} (${secondsToMinutes(song.effectiveLength)})` }}
           </span>
           <span class="font-sans text-2xs text-secondary">
-            {{ `${song.lastModified} - ${song.hashes.file}` }}
+            {{ song.lastModified }} - 
+            <span class="font-mono">
+              {{ song.hashes.file }}
+            </span>
           </span>
         </div>
       </div>
@@ -162,6 +165,9 @@ export default defineComponent({
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
           difficulty: this.song.noteCounts[key],
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          hashes: this.song.hashes[key],
         })
       }
     }

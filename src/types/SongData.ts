@@ -1,4 +1,5 @@
 import type NoteCounts from './NoteCounts'
+import type LevelsHashes from './LevelsHashes'
 
 interface ParentSource {
   link: string
@@ -11,13 +12,6 @@ interface Source {
   link: string
   parent: ParentSource
   isSetList: boolean
-}
-
-interface LevelsHashes {
-  e?: string
-  m?: string
-  h?: string
-  x?: string
 }
 
 interface Hashes {

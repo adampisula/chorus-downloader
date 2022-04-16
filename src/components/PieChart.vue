@@ -26,10 +26,6 @@ export default defineComponent({
   mounted() {
     this.computedFill = `${Math.min((this.fill > 0.5) ? this.fill - 0.5 : this.fill, 1) * 360}deg`
     this.maskBackground = (this.fill > 0.5) ? 'red' : 'rgb(31, 41, 55)'
-
-    console.log(this.computedFill)
-    console.log(this.maskBackground)
-    console.log('-')
   },
 })
 </script>
