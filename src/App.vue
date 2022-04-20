@@ -1,15 +1,21 @@
 <template>
   <div class="w-screen min-h-screen h-screen bg-navy overflow-hidden">
     <header-component
+      v-model:searchInput="searchInput"
       @searchClick="runSearch"
       @advancedSearchClick="setAdvancedSearchModalVisibility(true)"
       @settingsClick="setSettingsModalVisibility(true)"
     />
-    <song-list />
+    <song-list
+      :songList="songList"
+      :loading="loading"
+      @showMore="showMore"
+    />
 
     <advanced-search-modal
       v-show="advancedSearchModalVisible"
       @close="setAdvancedSearchModalVisibility(false)"
+      @onSubmit="advancedSearchSubmit($event)"
     />
     <settings-modal
       v-show="settingsModalVisible"
@@ -26,6 +32,12 @@ import HeaderComponent from './components/HeaderComponent.vue'
 import AdvancedSearchModal from './components/AdvancedSearchModal.vue'
 import SettingsModal from './components/SettingsModal.vue'
 import SongList from './components/SongList.vue'
+import SongData from './types/SongData'
+
+import runQuery from './utils/runQuery'
+
+let songList: SongData[] = []
+let lastQuery = ''
 
 export default defineComponent({
   name: 'App',
@@ -39,11 +51,46 @@ export default defineComponent({
     return {
       advancedSearchModalVisible: false,
       settingsModalVisible: false,
+      songList,
+      searchInput : '',
+      lastQuery,
+      loading: false,
     }
   },
   methods: {
     runSearch(query: string) {
-      alert(query)
+      this.songList = []
+      this.executeQuery(`search?query=${encodeURIComponent(query)}&from=0`)
+    },
+    executeQuery(query: string, append = false) {
+      console.log(query)
+
+      this.lastQuery = query
+      this.loading = true
+
+      runQuery(this.lastQuery).then((results) => {
+        console.log(results)
+
+        if(!append) {
+          this.songList = []
+        }
+
+        this.songList = this.songList.concat(results)
+        this.loading = false
+      }).catch((err) => {
+        alert(err)
+        this.loading = false
+      })
+    },
+    showMore(songCount: number) {
+      const urlQuery = new URLSearchParams(this.lastQuery.split('?')[1])
+      urlQuery.set('from', songCount.toString())
+
+      this.executeQuery(`${this.lastQuery.split('?')[0]}?${urlQuery.toString()}`, true)
+    },
+    advancedSearchSubmit(query: string) {
+      this.searchInput = query
+      this.runSearch(query)
     },
     setAdvancedSearchModalVisibility(visible: boolean) {
       this.advancedSearchModalVisible = visible
@@ -51,6 +98,10 @@ export default defineComponent({
     setSettingsModalVisibility(visible: boolean) {
       this.settingsModalVisible = visible
     },
+  },
+  mounted() {
+    // GET 20 LATEST CHARTS
+    this.executeQuery(`latest?from=0`)
   },
 })
 </script>

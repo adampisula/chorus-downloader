@@ -17,10 +17,26 @@
           >
             {{ song.name }}
           </span>
+          <span
+            class="ml-2 text-lg text-warning"
+            v-if="instruments.length == 0"
+          >
+            <Popper
+              :hover="true"
+              :arrow="true"
+            >
+              <font-awesome-icon icon="circle-exclamation" />
+              <template #content>
+                <span class="font-sans text-primary text-base">
+                  Corrupted file
+                </span>
+              </template>
+            </Popper>
+          </span>
         </div>
         <div>
           <span class="text-xs font-sans text-primary">
-            <span class="font-semibold mr-1">
+            <span class="font-semibold mr-0.5">
               {{ ratingNotes }}
             </span>
             {{ averageNotes }} average NPS
@@ -30,23 +46,35 @@
       <div class="w-full h-auto mt-0.5">
         <div class="w-full h-auto flex flex-row justify-between">
           <span class="font-sans text-2xs text-secondary">
-            {{ `${song.album} (${song.year}) - ${song.genre} - ${secondsToMinutes(song.length)} (${secondsToMinutes(song.effectiveLength)})` }}
+            {{ `${song.album || 'Unknown album'} (${song.year || 'N-A'}) - ${song.genre || 'Unknown genre'} - ${(song.length > 0) ? secondsToMinutes(song.length): 'N-A'} (${(song.effectiveLength > 0) ? secondsToMinutes(song.effectiveLength) : 'N-A'})` }}
           </span>
           <span class="font-sans text-2xs text-secondary">
-            {{ song.lastModified }} - 
-            <span class="font-mono">
-              {{ song.hashes.file }}
-            </span>
+            {{ song.lastModified || song.uploadedAt }} - 
+            <a
+              class="font-mono"
+              :href="`${siteUrl}/search?query=md5%3D${getMainHash()}`"
+              target="_blank"
+            >
+              {{ getMainHash() }}
+            </a>
           </span>
         </div>
       </div>
       <div class="w-full h-10 mt-1 flex justify-between">
-        <button
-          class="w-auto h-10 rounded-md bg-transparent hover:bg-navy-darker text-base text-primary px-3"
-        >
-          Download <span class="font-semibold">{{ this.song.charter }}</span>'s chart
-          <font-awesome-icon icon="download" class="ml-1 mb-0.5" />
-        </button>
+        <div>
+          <button
+            class="w-auto h-10 rounded-md bg-transparent hover:bg-navy-darker text-base text-primary px-3 py-2"
+            :class="{
+              'text-tertiary bg-gray-700 hover:bg-gray-700': getMainHash() == 'N-A'
+            }"
+            :disabled="getMainHash() == 'N-A'"
+            @click="alert('click')"
+
+          >
+            Download <span class="font-semibold">{{ this.song.charter || 'Unknown charter' }}</span>'s chart
+            <font-awesome-icon icon="download" class="ml-1 mb-0.5" />
+          </button>
+        </div>
         <div class="">
           <instrument-component
             v-for="(instrument, index) in instruments"
@@ -73,6 +101,13 @@ import type { PropType } from 'vue'
 import type NoteCounts from '../types/NoteCounts'
 import type InstrumentTierAndDiff from '../types/InstrumentTierAndDiff'
 import InstrumentComponent from './InstrumentComponent.vue'
+import { siteUrl } from '../config'
+
+//import { ipcRenderer } from 'electron'
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import Popper from 'vue3-popper' // NO TYPES AVAILABLE
 
 let averageNotes: number
 let ratingNotes: string
@@ -80,7 +115,8 @@ let instruments: InstrumentTierAndDiff[] = []
 
 export default defineComponent({
   components: {
-    InstrumentComponent
+    InstrumentComponent,
+    Popper,
   },
   name: 'SongComponent',
   props: {
@@ -91,12 +127,16 @@ export default defineComponent({
   },
   data() {
     return {
+      siteUrl,
       averageNotes,
       ratingNotes,
       instruments,
     }
   },
   methods: {
+    getMainHash() {
+      return (this.song.hashes) ? (this.song.hashes.file || 'N-A') : 'N-A'
+    },
     averageNPS(noteCounts: NoteCounts, effectiveLength: number): number {
       const instrumentsOrder = ['guitar', 'bass', 'guitarghl', 'bassghl', 'drums', 'band', 'rhythm', 'keys', 'vocals']
 
@@ -105,7 +145,7 @@ export default defineComponent({
 
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        if(noteCounts[instrument]) {
+        if(noteCounts && noteCounts[instrument]) {
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
           const notes: number = noteCounts[instrument].x || noteCounts[instrument].h || noteCounts[instrument].m || noteCounts[instrument].e || 0
@@ -146,6 +186,9 @@ export default defineComponent({
     },
     secondsToMinutes(length: number): string {
       return `${Math.floor(length / 60)}:${(0 + (length % 60).toString()).slice(-2)}`
+    },
+    downloadAndInstall() {
+      //ipcRenderer.send('download-song', this.getMainHash())
     },
   },
   mounted() {

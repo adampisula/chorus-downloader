@@ -13,6 +13,8 @@ module.exports = {
         'highlight': '#ffb300',
         'primary': '#ffffff',
         'secondary': '#d7d7d7',
+        'tertiary': '#9ca3af',
+        'warning': '#e04848',
       },
       fontFamily: {
         sans: ['Nunito', 'sans-serif'],

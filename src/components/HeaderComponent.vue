@@ -9,8 +9,10 @@
         type="text"
         placeholder="What do you feel like playing today?"
         spellcheck="false"
-        class="w-full h-10 border border-gray-400 bg-white rounded-md focus:outline-none pl-4 pr-10 font-sans font-normal text-sm"
-        v-model="searchQuery"
+        class="w-full h-10 border border-tertiary bg-white rounded-md focus:outline-none pl-4 pr-10 font-sans font-normal text-sm"
+        :value="searchInput"
+        @input="updateSearchInput"
+        @keyup.enter="$emit('searchClick', searchInput)"
       />
       <button
         class="absolute right-1 top-1 h-8 w-8 px-2 ml-1 bg-white text-lg rounded-full text-gray-300 hover:text-gray-400"
@@ -39,16 +41,17 @@ import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'HeaderComponent',
-  emits: ['searchClick', 'advancedSearchClick', 'settingsClick'],
-  data() {
-    return {
-      searchQuery: '',
+  emits: ['update:searchInput', 'searchClick', 'advancedSearchClick', 'settingsClick'],
+  props: {
+    searchInput: {
+      type: String,
+      default: '',
     }
   },
   methods: {
-    sayHi() {
-      alert('Hi man!')
-    },
+    updateSearchInput(e: any) {
+      this.$emit('update:searchInput', e.target.value)
+    }
   },
 })
 </script>
