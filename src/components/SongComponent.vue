@@ -68,7 +68,7 @@
               'text-tertiary bg-gray-700 hover:bg-gray-700': getMainHash() == 'N-A'
             }"
             :disabled="getMainHash() == 'N-A'"
-            @click="alert('click')"
+            @click="downloadAndInstall()"
 
           >
             Download <span class="font-semibold">{{ this.song.charter || 'Unknown charter' }}</span>'s chart
@@ -102,8 +102,6 @@ import type NoteCounts from '../types/NoteCounts'
 import type InstrumentTierAndDiff from '../types/InstrumentTierAndDiff'
 import InstrumentComponent from './InstrumentComponent.vue'
 import { siteUrl } from '../config'
-
-//import { ipcRenderer } from 'electron'
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -188,7 +186,11 @@ export default defineComponent({
       return `${Math.floor(length / 60)}:${(0 + (length % 60).toString()).slice(-2)}`
     },
     downloadAndInstall() {
-      //ipcRenderer.send('download-song', this.getMainHash())
+      const payload = { url: this.song.link }
+
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      window.ipc.send('REQUEST_DOWNLOAD', payload)
     },
   },
   mounted() {

@@ -3,6 +3,14 @@
 import { app, protocol, BrowserWindow, shell } from "electron"
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib"
 import installExtension, { VUEJS3_DEVTOOLS } from "electron-devtools-installer"
+import { resolve, join } from 'path'
+import { ipcMain } from 'electron'
+
+import requestDownload from './requestDownload'
+
+ipcMain.on('REQUEST_DOWNLOAD', (event, payload) => {
+  requestDownload(payload.url, event)
+});
 
 const isDevelopment = process.env.NODE_ENV !== "production"
 
@@ -21,14 +29,17 @@ async function createWindow() {
     webPreferences: {
       // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
-      nodeIntegration: true,
+      nodeIntegration: false,
+      contextIsolation: true,
+      enableRemoteModule: false,
+      webSecurity: false,
       devTools: true,
-      webSecurity: false
+      preload: resolve(join(__dirname, 'preload.js'))
     },
     autoHideMenuBar: true,
   })
 
-  win.setTitle('Chorus Downloader')
+  win.setTitle('Chorus Plus')
   win.on("page-title-updated", (event) => event.preventDefault())
 
   win.webContents.setWindowOpenHandler((details) => {
