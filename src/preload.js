@@ -1,6 +1,6 @@
 import { contextBridge, ipcRenderer } from "electron"
 
-const validChannels = ['REQUEST_DOWNLOAD', 'DOWNLOAD_PROGRESS']
+const validChannels = ['REQUEST_DOWNLOAD', 'DOWNLOAD_STATUS', 'SAVE_CONFIG']
 
 contextBridge.exposeInMainWorld(
   'ipc', {

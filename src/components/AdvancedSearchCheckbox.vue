@@ -33,7 +33,7 @@ export default defineComponent({
       } else if(this.modelValue == 1) {
         newState = 0
       } else {
-        newState = 1
+        newState = -1
       }
 
       this.$emit('update:modelValue', newState)

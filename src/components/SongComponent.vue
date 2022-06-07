@@ -62,18 +62,12 @@
       </div>
       <div class="w-full h-10 mt-1 flex justify-between">
         <div>
-          <button
-            class="w-auto h-10 rounded-md bg-transparent hover:bg-navy-darker text-base text-primary px-3 py-2"
-            :class="{
-              'text-tertiary bg-gray-700 hover:bg-gray-700': getMainHash() == 'N-A'
-            }"
-            :disabled="getMainHash() == 'N-A'"
-            @click="downloadAndInstall()"
-
-          >
-            Download <span class="font-semibold">{{ this.song.charter || 'Unknown charter' }}</span>'s chart
-            <font-awesome-icon icon="download" class="ml-1 mb-0.5" />
-          </button>
+          <download-song-button
+            :charter="this.song.charter || 'Unknown charter'"
+            :hash="getMainHash()"
+            :downloadStatus="downloadStatus"
+            @click="sendDownloadRequest()"
+          />
         </div>
         <div class="">
           <instrument-component
@@ -101,26 +95,36 @@ import type { PropType } from 'vue'
 import type NoteCounts from '../types/NoteCounts'
 import type InstrumentTierAndDiff from '../types/InstrumentTierAndDiff'
 import InstrumentComponent from './InstrumentComponent.vue'
+import DownloadSongButton from './DownloadSongButton.vue'
 import { siteUrl } from '../config'
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import Popper from 'vue3-popper' // NO TYPES AVAILABLE
+import ExtendedWindow from '@/types/ExtendedWindow'
+import DownloadStatus from '@/types/DownloadStatus'
 
 let averageNotes: number
 let ratingNotes: string
 let instruments: InstrumentTierAndDiff[] = []
 
+let prevStatus: any = {}
+
 export default defineComponent({
   components: {
     InstrumentComponent,
     Popper,
+    DownloadSongButton,
   },
   name: 'SongComponent',
   props: {
     song: {
       type: Object as PropType<SongData>,
-      required: true
+      required: true,
+    },
+    downloadStatus: {
+      type: Object as PropType<DownloadStatus>,
+      required: false,
     },
   },
   data() {
@@ -129,6 +133,8 @@ export default defineComponent({
       averageNotes,
       ratingNotes,
       instruments,
+
+      hovering: false,
     }
   },
   methods: {
@@ -185,12 +191,10 @@ export default defineComponent({
     secondsToMinutes(length: number): string {
       return `${Math.floor(length / 60)}:${(0 + (length % 60).toString()).slice(-2)}`
     },
-    downloadAndInstall() {
-      const payload = { url: this.song.link }
+    sendDownloadRequest() {
+      const extendedWindow: ExtendedWindow = window
 
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      window.ipc.send('REQUEST_DOWNLOAD', payload)
+      extendedWindow.ipc?.send('REQUEST_DOWNLOAD', this.getMainHash())
     },
   },
   mounted() {

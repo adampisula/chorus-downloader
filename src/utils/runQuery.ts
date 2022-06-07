@@ -3,6 +3,8 @@ import advancedSearchQueryToString from './advancedSearchQueryToString'
 import { apiUrl } from '../config'
 import SongData from '@/types/SongData'
 
+import ExampleSongList from '@/ExampleSongList'
+
 const runQuery = (query: string): Promise<SongData[]> => {
   if(typeof query === 'object' && query !== null) {
     query = advancedSearchQueryToString(query)

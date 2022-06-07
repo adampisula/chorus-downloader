@@ -14,28 +14,28 @@
       class="px-5 py-2 max-w-5xl w-5/6 h-auto rounded-md bg-navy shadow-lg mx-auto my-8 text-center"
     >
       <div class="w-full grid grid-cols-3 text-left">
-        <advanced-search-text-input
+        <text-input-with-label
           label="Song"
           v-model="advancedSearchData.name"
         />
-        <advanced-search-text-input
+        <text-input-with-label
           label="Artist/band"
           v-model="advancedSearchData.artist"
         />
-        <advanced-search-text-input
+        <text-input-with-label
           label="Album"
           v-model="advancedSearchData.album"
         />
 
-        <advanced-search-text-input
+        <text-input-with-label
           label="Genre"
           v-model="advancedSearchData.genre"
         />
-        <advanced-search-text-input
+        <text-input-with-label
           label="Charter"
           v-model="advancedSearchData.charter"
         />
-        <advanced-search-text-input
+        <text-input-with-label
           label="MD5 Checksum"
           v-model="advancedSearchData.md5"
         />
@@ -137,7 +137,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import AdvancedSearchTextInput from './AdvancedSearchTextInput.vue'
+import TextInputWithLabel from './TextInputWithLabel.vue'
 import TierAndDifficultyInput from './TierAndDifficultyInput.vue'
 import AdvancedSearchCheckbox from './AdvancedSearchCheckbox.vue'
 
@@ -183,7 +183,7 @@ const advancedSearchDataDefault = {
 export default defineComponent({
   name: 'AdvancedSearchModal',
   components: {
-    AdvancedSearchTextInput,
+    TextInputWithLabel,
     TierAndDifficultyInput,
     AdvancedSearchCheckbox,
   },

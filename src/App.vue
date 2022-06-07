@@ -9,6 +9,7 @@
     <song-list
       :songList="songList"
       :loading="loading"
+      :downloadStatuses="downloadStatuses"
       @showMore="showMore"
     />
 
@@ -35,9 +36,12 @@ import SongList from './components/SongList.vue'
 import SongData from './types/SongData'
 
 import runQuery from './utils/runQuery'
+import ExtendedWindow from './types/ExtendedWindow'
+import DownloadStatus from './types/DownloadStatus'
 
 let songList: SongData[] = []
 let lastQuery = ''
+let downloadStatuses: any = {}
 
 export default defineComponent({
   name: 'App',
@@ -55,6 +59,8 @@ export default defineComponent({
       searchInput : '',
       lastQuery,
       loading: false,
+
+      downloadStatuses,
     }
   },
   methods: {
@@ -102,6 +108,16 @@ export default defineComponent({
   mounted() {
     // GET 20 LATEST CHARTS
     this.executeQuery(`latest?from=0`)
+
+    const extendedWindow: ExtendedWindow = window
+
+    extendedWindow.ipc?.on('DOWNLOAD_STATUS', (downloadStatus, _) => {
+      console.log(downloadStatus)
+
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      this.downloadStatuses[downloadStatus.hash] = downloadStatus
+    })
   },
 })
 </script>

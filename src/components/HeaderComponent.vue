@@ -1,10 +1,10 @@
 <template>
-  <div class="bg-navy-lighter w-screen h-auto flex flex-row py-2 px-2 border-b-2 border-navy-darker">
+  <div class="bg-navy-lighter w-screen h-auto flex flex-row py-2 px-2 border-b-2 border-navy-darker items-center">
     <img
-      src="http://placebear.com/g/40/40"
-      class="rounded-full"
+      src="../assets/chorus-plus.svg"
+      class="h-8 mt-2 mx-3"
     />
-    <div class="flex-1 h-auto ml-2 relative">
+    <div class="flex-1 h-auto ml-1 relative">
       <input 
         type="text"
         placeholder="What do you feel like playing today?"

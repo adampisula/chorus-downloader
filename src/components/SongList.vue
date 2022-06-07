@@ -7,6 +7,7 @@
       v-for="(song, index) in songList"
       :key="index"
       :song="song"
+      :downloadStatus="downloadStatuses[song.hashes.file] || {}" 
     />
     <div class="w-full text-center">
       <button
@@ -35,15 +36,21 @@ import { defineComponent, PropType } from 'vue'
 import SongComponent from './SongComponent.vue'
 import LoaderComponent from './LoaderComponent.vue'
 
+let prevStatuses: any = {}
+
 export default defineComponent({
   name: 'SongList',
   props: {
     songList: {
-      type: Array as PropType<SongData[]>
+      type: Array as PropType<SongData[]>,
+      required: true,
     },
     loading: {
       type: Boolean,
       default: false,
+    },
+    downloadStatuses: {
+      type: Object,
     },
   },
   components: {

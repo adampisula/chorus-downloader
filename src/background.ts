@@ -5,12 +5,9 @@ import { createProtocol } from "vue-cli-plugin-electron-builder/lib"
 import installExtension, { VUEJS3_DEVTOOLS } from "electron-devtools-installer"
 import { resolve, join } from 'path'
 import { ipcMain } from 'electron'
+import ipcHandler from "./ipcHandler";
 
-import requestDownload from './requestDownload'
-
-ipcMain.on('REQUEST_DOWNLOAD', (event, payload) => {
-  requestDownload(payload.url, event)
-});
+ipcHandler(ipcMain)
 
 const isDevelopment = process.env.NODE_ENV !== "production"
 
@@ -37,6 +34,7 @@ async function createWindow() {
       preload: resolve(join(__dirname, 'preload.js'))
     },
     autoHideMenuBar: true,
+    titleBarStyle: 'default',
   })
 
   win.setTitle('Chorus Plus')
